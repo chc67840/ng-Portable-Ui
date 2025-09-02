@@ -1,0 +1,15 @@
+/* AG Grid theme (imports must appear before other CSS per Angular build warning) */
+@import 'ag-grid-community/styles/ag-grid.css';
+@import 'ag-grid-community/styles/ag-theme-quartz.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --ds-spacing-unit: 4px;
+}
+
+body {
+    font-family: system-ui, sans-serif;
+}

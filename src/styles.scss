@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* AG Grid theme */
+@import 'ag-grid-community/styles/ag-grid.css';
+@import 'ag-grid-community/styles/ag-theme-quartz.css';
+
+/* Design tokens / custom vars placeholder */
+:root {
+    --ds-spacing-unit: 4px;
+}
+
+body {
+    font-family: system-ui, sans-serif;
+}
