@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { DsTextComponent } from './formcontrol/ds-text.component';
 import { DsNumberComponent } from './formcontrol/ds-number.component';
 import { DsDateComponent } from './formcontrol/ds-date.component';
-import { DsTimeComponent } from './ds-time.component';
+import { DsTimeComponent } from './formcontrol/ds-time.component';
 import { DsDateTimeComponent } from './formcontrol/ds-datetime.component';
 import { DsSelectComponent } from './formcontrol/ds-select.component';
 import { DsSwitchComponent } from './formcontrol/ds-switch.component';
@@ -78,8 +78,10 @@ export const DS_COMPONENTS = [
 ];
 
 @NgModule({
-    imports: [...DS_COMPONENTS],
-    exports: [...DS_COMPONENTS]
+    // For standalone components we list them under imports so consumers using the module
+    // get them transitively; avoid spread for better Angular static analysis.
+    imports: DS_COMPONENTS,
+    exports: DS_COMPONENTS
 })
 export class DsComponentsModule { }
 
