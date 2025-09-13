@@ -1,13 +1,31 @@
 {
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "Full Stack (API + Web)",
+      "configurations": [
+        "API Debug"
+        //"Web Debug"
+      ]
+    }
+  ],
   "configurations": [
     {
-      "name": "ng serve",
+      "name": "API Debug",
       "type": "chrome",
       "request": "launch",
       "preLaunchTask": "npm: start",
-      "url": "http://localhost:4200/"
+      "url": "http://localhost:4200/",
+      //"type": "coreclr",
+      //"request": "launch",
+      //"program": "${workspaceFolder}/src/Api/bin/Debug/net9.0/Api.dll",
+      "cwd": "${workspaceFolder}/src/Api",
+      //"stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+      //"preLaunchTask": "API: build"
     },
     {
       "name": "ng test",

@@ -1,0 +1,4 @@
+# Example CODEOWNERS (adjust paths or teams)
+* @your-org/owners
+/web/ @your-org/frontend
+/src/Api/ @your-org/backend

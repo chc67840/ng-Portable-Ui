@@ -1,0 +1,62 @@
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit",
+    "source.fixAll": "explicit"
+  },
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "explorer.compactFolders": false,
+  "search.exclude": {
+    "**/dist": true,
+    "**/bin": true,
+    "**/obj": true,
+    "**/.angular": true,
+    "**/coverage": true
+  },
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "typescript.format.semicolons": "insert",
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "prettier.requireConfig": true,
+  "css.validate": true,
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "html": "html"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    [
+      "clsx\\(([^)]*)\\)",
+      "(?:'|\"|`)([^'\"`]*)(?:'|\"|`)"
+    ],
+    [
+      "cva\\(([^)]*)\\)",
+      "(?:'|\"|`)([^'\"`]*)(?:'|\"|`)"
+    ]
+  ],
+  "dotnet.defaultSolution": "YourSolution.sln",
+  "csharp.suppressDotnetInstallWarning": true,
+  "github.copilot.inlineSuggest.enable": true,
+  "github.copilot.editor.enableAutoCompletions": true,
+  "github.copilot.chat.serverSideSuggestions": "on",
+  "github.copilot.chat.codesearch": "on",
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": false,
+    "markdown": true,
+    "scminput": false
+  },
+  "security.workspace.trust.untrustedFiles": "newWindow",
+  "workbench.settings.applyToAllProfiles": true,
+  "markdown.preview.breaks": true,
+  "markdown.extension.toc.levels": "1..4",
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.defaultProfile.osx": "zsh"
+}

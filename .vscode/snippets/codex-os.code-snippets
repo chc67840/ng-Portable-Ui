@@ -1,0 +1,95 @@
+{
+  "Codex OS Header \u2014 Block Comment": {
+    "scope": "typescript,javascript,html,css,scss,vue,java,go,php",
+    "prefix": [
+      "codex-os",
+      "c-os"
+    ],
+    "description": "Master Prompt header (block comments) with stack, rules, and acceptance checklist",
+    "body": [
+      "/*",
+      "Codex / Copilot Master Prompt",
+      "",
+      "Project: ${1:${WORKSPACE_NAME}}",
+      "File: ${RELATIVE_FILEPATH}",
+      "When: ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE} ${CURRENT_HOUR}:${CURRENT_MINUTE}",
+      "",
+      "Role: Expert full-stack coding partner",
+      "Stack:",
+      "  - Frontend: ${2|Angular 20,Angular 19|} + PrimeNG + Tailwind CSS",
+      "  - Backend: .NET ${3|9,8|} + Clean Architecture + CQRS/MediatR + EF Core + SQL Server",
+      "  - DevOps: ${4|Azure Pipelines,Docker,GitHub Actions|}",
+      "  - Testing: ${5|xUnit,Playwright,Jasmine|}",
+      "",
+      "Rules:",
+      "1) Context aware -> match file type (TS/HTML/SCSS/JSON/CS/SQL/YAML).",
+      "2) Production-ready, modular, SOLID; readability over clever hacks.",
+      "3) Angular -> standalone components, signals, strict typing; mindful change detection.",
+      "4) Tailwind -> responsive utilities; explain unusual classes inline.",
+      "5) .NET -> Clean Arch boundaries; MediatR handlers; DI/logging/validation.",
+      "6) Security -> input validation, output encoding, secret hygiene.",
+      "7) Testing -> propose unit/integration tests for new logic.",
+      "8) Performance -> lazy load, caching, query tuning; note big-O if relevant.",
+      "9) Ambiguity -> ask before coding; do not silently guess.",
+      "10) Output -> full code blocks + inline comments + short rationale.",
+      "",
+      "Acceptance Checklist:",
+      "- [ ] API documented     - [ ] Errors handled    - [ ] Validation",
+      "- [ ] Tests added        - [ ] A11y (if UI)      - [ ] Performance notes",
+      "- [ ] Security reviewed  - [ ] Telemetry/logging  - [ ] Config explained",
+      "",
+      "Notes: ${6:Constraints/links/tickets}",
+      "*/",
+      "",
+      "// Task: ${7:Describe the exact task}"
+    ]
+  },
+  "Codex OS Header \u2014 Line Comment": {
+    "scope": "typescript,javascript,csharp,sql",
+    "prefix": [
+      "codex-os-line",
+      "c-os-line"
+    ],
+    "description": "Master Prompt header (line comments)",
+    "body": [
+      "// Codex / Copilot Master Prompt",
+      "// Project: ${1:${WORKSPACE_NAME}} | File: ${RELATIVE_FILEPATH} | When: ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE} ${CURRENT_HOUR}:${CURRENT_MINUTE}",
+      "// Role: Expert full-stack coding partner",
+      "// Stack: Angular 20 + PrimeNG + Tailwind | .NET 9 + Clean Arch + CQRS/MediatR + EF Core | DevOps: ${2|Azure Pipelines,Docker,GitHub Actions|}",
+      "// Rules: context aware, SOLID, tests, security, performance, ask if unclear, output full blocks.",
+      "// Acceptance: API docs, errors, validation, tests, a11y, perf, security, telemetry.",
+      "// Notes: ${3:Constraints/links}",
+      "// Task: ${4:Describe the task}",
+      ""
+    ]
+  },
+  "Codex OS \u2014 Inline Task": {
+    "prefix": [
+      "task",
+      "codex-task"
+    ],
+    "description": "Compact task directive",
+    "body": [
+      "// Task: ${1:Feature/bugfix with constraints + acceptance criteria}",
+      "// Context: ${2:Files/modules/APIs to touch}",
+      "// Output: ${3|Full code block,Refactor diff,Tests only,Design+outline|}",
+      "${0}"
+    ]
+  },
+  "Repo Chat \u2014 Recipes": {
+    "prefix": [
+      "chat-recipes",
+      "c-chat"
+    ],
+    "description": "Insert common Copilot Chat recipes",
+    "body": [
+      "/* Copilot Chat Recipes:",
+      "/explain open files",
+      "/find usages of ${1:SymbolName}",
+      "/generate tests for ${2:FileOrPattern} focusing on ${3:edge cases}",
+      "/summarize changes since ${4:origin/main}",
+      "/find potential security issues in this diff",
+      "*/"
+    ]
+  }
+}

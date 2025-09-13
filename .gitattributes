@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.cs diff=csharp
+*.ts diff=javascript
+*.tsx diff=javascript
+*.json linguist-language=JSON
+*.md linguist-documentation
