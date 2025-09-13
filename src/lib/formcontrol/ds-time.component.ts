@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, CUSTOM_ELEMENTS_SCHEMA, ViewChild, ElementRef, signal, HostBinding, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DsThemeService } from './ds-theme.service';
+import { DsThemeService } from '../ds-theme.service';
 
 /**
  * ds-time: wrapper around <wa-input type="time"> emits HH:MM(:SS)? 24h string

@@ -7,7 +7,7 @@ import { DsLayoutConfig, DsContainerConfig, DsRowConfig, DsColumnConfig, DsCompo
 import { DsTextComponent } from '../formcontrol/ds-text.component';
 import { DsNumberComponent } from '../formcontrol/ds-number.component';
 import { DsDateComponent } from '../formcontrol/ds-date.component';
-import { DsTimeComponent } from '../ds-time.component';
+import { DsTimeComponent } from '../formcontrol/ds-time.component';
 import { DsDateTimeComponent } from '../formcontrol/ds-datetime.component';
 import { DsSelectComponent } from '../formcontrol/ds-select.component';
 import { DsSwitchComponent } from '../formcontrol/ds-switch.component';
