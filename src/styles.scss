@@ -13,4 +13,40 @@
 
 body {
     font-family: system-ui, sans-serif;
+    background: var(--ds-bg-base);
+    color: var(--ds-color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+/* Web Awesome reset / neutralization layer.
+     Goal: Strip opinionated vendor styling so Tailwind utility classes & our tokens control look. */
+@layer base {
+    :where(wa-input, wa-select, wa-button, wa-textarea, wa-switch, wa-radio, wa-progress-ring, wa-drawer, wa-tab-group, wa-tab, wa-tree, wa-details) {
+        font: inherit;
+        color: inherit;
+        background: transparent;
+        border: none;
+        box-sizing: border-box;
+    }
+
+    :where(wa-input, wa-select, wa-textarea) {
+        width: 100%;
+    }
+}
+
+/* Themed CSS variable usage examples (optional utility classes) */
+@layer components {
+    .ds-surface {
+        background: var(--ds-bg-elevated);
+        color: var(--ds-color-text-primary);
+        border: 1px solid var(--ds-border-subtle);
+        border-radius: var(--ds-radius-md);
+        box-shadow: var(--ds-shadow-sm);
+    }
+
+    .ds-focus-ring:focus-visible {
+        outline: 2px solid var(--ds-border-focus);
+        outline-offset: 2px;
+    }
 }

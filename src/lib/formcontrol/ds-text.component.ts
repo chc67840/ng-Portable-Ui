@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, Output, signal, CUSTOM_ELEMENTS_SCHEMA, ViewChild, ElementRef, inject, HostBinding } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WA_TAGS } from '../wa-registry';
-import { DsThemeService } from '../ds-theme.service';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, effect, ElementRef, EventEmitter, HostBinding, inject, Input, Output, signal, ViewChild } from '@angular/core';
+// Old DsThemeService removed – now using ThemeEngineService component tokens
+import { ThemeEngineService } from '../theme/theme-engine.service';
 import { computeUnderlineInputClass } from '../util/underline.util';
+import { WA_TAGS } from '../wa-registry';
 
 // Thin wrapper over <wa-input>. Provides stable Angular Input/Output API.
 // IMPORTANT: We rely on CUSTOM_ELEMENTS_SCHEMA globally (standalone build supports custom elements).
@@ -28,7 +29,7 @@ import { computeUnderlineInputClass } from '../util/underline.util';
   [attr.title]="titleAttr || null"
         [attr.name]="name || null"
         [attr.placeholder]="placeholder || null"
-  
+
         [attr.with-clear]="withClear ? '' : null"
         [attr.readonly]="readonly ? '' : null"
         [attr.password-toggle]="passwordToggle ? '' : null"
@@ -68,11 +69,11 @@ import { computeUnderlineInputClass } from '../util/underline.util';
   `,
   styles: [``]
 })
-export class DsTextComponent {
-  private theme = inject(DsThemeService);
+export class DsTextComponent implements AfterViewInit {
+  private engine = inject(ThemeEngineService);
   protected readonly tag = WA_TAGS.input;
 
-  @ViewChild('el', { static: true }) el!: ElementRef<HTMLElement & { value: string }>; // broaden typing
+  @ViewChild('el', { static: true }) el!: ElementRef<HTMLElement & { value: string; }>; // broaden typing
 
   // Internal value signal + external binding
   model = signal('');
@@ -125,7 +126,7 @@ export class DsTextComponent {
   private isInvalid = false;
 
   get displayHint(): string | undefined { return this.hint ?? this.help; }
-  get computedLabelClass(): string { return this.labelClass || this.theme.controlLabel(); }
+  get computedLabelClass(): string { return this.labelClass || 'text-[var(--ds-color-text-secondary)]'; }
   get computedWrapperClass(): string {
     let base = this.wrapperClass || '';
     if (this.labelPosition === 'inline') {
@@ -138,7 +139,10 @@ export class DsTextComponent {
     }
     return base.trim();
   }
-  get computedInputClass(): string { return computeUnderlineInputClass({ base: this.inputClass || this.theme.controlInputUnderlineFilled() }); }
+  get computedInputClass(): string {
+    const baseDefault = 'transition-colors outline-none disabled:cursor-not-allowed';
+    return computeUnderlineInputClass({ base: this.inputClass || baseDefault });
+  }
   // Constraint behavior flags
   @Input() enforceMaxlength = true;   // trim text values that exceed maxlength
 
@@ -199,4 +203,29 @@ export class DsTextComponent {
     }
   }
   ngAfterViewInit() { this.applyCssVars(); }
+
+  private applyThemeVars() {
+    const t = this.engine.active() as any;
+    const tokens = t.components.input as any;
+    const variant = this.appearance === 'filled' ? tokens.variants.filled : tokens.variants.outline;
+    const vars: Record<string, string> = {
+      '--ds-input-height': tokens.height[this.size === 'small' ? 'sm' : this.size === 'large' ? 'lg' : 'md'],
+      '--ds-input-radius': `var(--ds-radius-${tokens.radius})`,
+      '--ds-input-padding-x': tokens.paddingX,
+      '--ds-input-padding-y': tokens.paddingY,
+      '--ds-input-font-size': tokens.fontSize,
+      '--ds-input-line-height': tokens.lineHeight,
+      '--ds-input-font-weight': tokens.weight,
+      '--ds-input-bg': variant.bg,
+      '--ds-input-fg': variant.fg,
+      '--ds-input-border': variant.border || 'transparent',
+      '--ds-input-ring': variant.ring || 'transparent',
+      '--ds-input-hover-bg': (variant as any).hoverBg || variant.bg,
+      '--ds-input-focus-bg': (variant as any).focusBg || variant.bg,
+      '--ds-input-placeholder': (variant as any).placeholder || 'currentColor'
+    };
+    this.cssVars = { ...(this.cssVars || {}), ...vars };
+    this.applyCssVars();
+  }
+  private _themeEff = effect(() => { this.applyThemeVars(); });
 }

@@ -20,17 +20,17 @@ Goal: Build our own ds-* components mapping stable props → third-party libs. S
 
 ## Package names:
 
-        Web Awesome: @awesome.me/webawesome (cherry-pick imports). 
+        Web Awesome: @awesome.me/webawesome (cherry-pick imports).
         Web Awesome
 
-        AG Grid (Community): ag-grid-community. 
+        AG Grid (Community): ag-grid-community.
         npm
 
-        WA prefix: wa- (e.g., wa-input, wa-select, wa-button). 
+        WA prefix: wa- (e.g., wa-input, wa-select, wa-button).
         Web Awesome
         +1
 
-Angular must include CUSTOM_ELEMENTS_SCHEMA in components using custom elements. 
+Angular must include CUSTOM_ELEMENTS_SCHEMA in components using custom elements.
 Angular
 
 ## Folder structure (current key files)

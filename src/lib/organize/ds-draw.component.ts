@@ -1,7 +1,7 @@
-import { Component, Input, Output, EventEmitter, signal, computed, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild, AfterViewInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, computed, CUSTOM_ELEMENTS_SCHEMA, ElementRef, EventEmitter, inject, Input, Output, signal, ViewChild } from '@angular/core';
+import { ThemeEngineService } from '../theme/theme-engine.service';
 import { WA_TAGS } from '../wa-registry';
-import { DsThemeService, ThemeName } from '../ds-theme.service';
 
 // Theme model (extensible)
 export interface DsTheme {
@@ -68,7 +68,7 @@ export const DEFAULT_THEMES: DsTheme[] = [
     styles: [`:host{display:contents}`]
 })
 export class DsDrawComponent implements AfterViewInit {
-    private themeService = inject(DsThemeService);
+    private engine = inject(ThemeEngineService);
     drawerTag = WA_TAGS.drawer;
     // Open state
     private _open = signal(false);
@@ -79,7 +79,7 @@ export class DsDrawComponent implements AfterViewInit {
     @Output() afterOpen = new EventEmitter<void>();
     @Output() afterClose = new EventEmitter<void>();
 
-    @ViewChild('drawerEl', { static: false }) drawerRef?: ElementRef<HTMLElement & { open?: boolean }>;
+    @ViewChild('drawerEl', { static: false }) drawerRef?: ElementRef<HTMLElement & { open?: boolean; }>;
 
     // Themes
     @Input() themes: DsTheme[] = DEFAULT_THEMES;
@@ -144,8 +144,8 @@ export class DsDrawComponent implements AfterViewInit {
     selectTheme(th: DsTheme) {
         this._theme.set(th);
         this.themeChange.emit(th);
-        // Notify global theme service if matches a known theme key
-        this.themeService.setTheme(th.name as ThemeName);
+        // Apply to new token engine (data-theme attribute + vars)
+        this.engine.setTheme(th.name);
     }
 
     setRadius(r: string) { this.radius.set(r); this.radiusChange.emit(r); }
@@ -160,8 +160,23 @@ export class DsDrawComponent implements AfterViewInit {
         this.currentTheme().surface,
         this.currentTheme().surfaceText,
         this.currentTheme().border,
-        'transition-colors'
+        'transition-colors',
+        // Preview selected radius via data attr
+        this.radiusClass()
     ].join(' '));
+
+    private radiusClass() {
+        const r = this.radius();
+        switch (r) {
+            case 'none': return 'rounded-none';
+            case 'sm': return 'rounded';
+            case 'md': return 'rounded-md';
+            case 'lg': return 'rounded-lg';
+            case 'xl': return 'rounded-xl';
+            case 'full': return 'rounded-full';
+            default: return 'rounded-md';
+        }
+    }
 
     borderClass() { return this.currentTheme().border; }
     surfaceButtonBase() { return 'px-3 py-1 rounded-md border text-xs font-medium hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition'; }

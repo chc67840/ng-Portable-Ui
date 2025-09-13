@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter, CUSTOM_ELEMENTS_SCHEMA, ViewChild, ElementRef, signal, HostBinding, SimpleChanges, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WA_TAGS } from '../wa-registry';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, effect, ElementRef, EventEmitter, HostBinding, inject, Input, OnChanges, Output, signal, SimpleChanges, ViewChild } from '@angular/core';
+import { ThemeEngineService } from '../theme/theme-engine.service';
 import { computeUnderlineInputClass } from '../util/underline.util';
+import { WA_TAGS } from '../wa-registry';
 
 /**
  * ds-textarea: wrapper around <wa-textarea> with unified DS API.
@@ -139,12 +140,38 @@ export class DsTextareaComponent implements OnChanges {
         return base.trim();
     }
     get computedTextareaClass(): string {
-        let cls = computeUnderlineInputClass({ base: this.textareaClass });
+        const baseDefault = 'transition-colors outline-none disabled:cursor-not-allowed min-h-[var(--ds-input-height,2.25rem)]';
+        let cls = computeUnderlineInputClass({ base: this.textareaClass || baseDefault });
         if (this.resize === 'none' && !/resize-none/.test(cls)) cls += ' resize-none';
         return cls;
     }
+    private engine = inject(ThemeEngineService);
 
     ngAfterViewInit() { this.applyCssVars(); this.setElValue(); this.applyCustomValidity(); if (this.expand) this.autoExpand(); }
+    private applyThemeVars() {
+        const t = this.engine.active() as any;
+        const tokens = t.components.input as any;
+        const variant = this.appearance === 'filled' ? tokens.variants.filled : tokens.variants.outline;
+        const vars: Record<string, string> = {
+            '--ds-input-height': tokens.height[this.size === 'small' ? 'sm' : this.size === 'large' ? 'lg' : 'md'],
+            '--ds-input-radius': `var(--ds-radius-${tokens.radius})`,
+            '--ds-input-padding-x': tokens.paddingX,
+            '--ds-input-padding-y': tokens.paddingY,
+            '--ds-input-font-size': tokens.fontSize,
+            '--ds-input-line-height': tokens.lineHeight,
+            '--ds-input-font-weight': tokens.weight,
+            '--ds-input-bg': variant.bg,
+            '--ds-input-fg': variant.fg,
+            '--ds-input-border': variant.border || 'transparent',
+            '--ds-input-ring': variant.ring || 'transparent',
+            '--ds-input-hover-bg': (variant as any).hoverBg || variant.bg,
+            '--ds-input-focus-bg': (variant as any).focusBg || variant.bg,
+            '--ds-input-placeholder': (variant as any).placeholder || 'currentColor'
+        };
+        this.cssVars = { ...(this.cssVars || {}), ...vars };
+        this.applyCssVars();
+    }
+    private _themeEff = effect(() => { this.applyThemeVars(); });
     ngOnChanges(ch: SimpleChanges) {
         if (ch['cssVars']) this.applyCssVars();
         if (ch['validationMessage']) this.applyCustomValidity();

@@ -1,8 +1,8 @@
-import { Component, Input, Output, EventEmitter, CUSTOM_ELEMENTS_SCHEMA, ViewChild, ElementRef, signal, computed, HostBinding, inject, TemplateRef, ContentChildren, QueryList, AfterContentInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WA_TAGS } from '../wa-registry';
+import { AfterContentInit, Component, computed, CUSTOM_ELEMENTS_SCHEMA, ElementRef, EventEmitter, HostBinding, inject, Input, Output, signal, ViewChild } from '@angular/core';
 import { DsThemeService } from '../ds-theme.service';
 import { computeUnderlineInputClass } from '../util/underline.util';
+import { WA_TAGS } from '../wa-registry';
 
 /**
  * ds-select: Angular wrapper around <wa-select>.
@@ -106,7 +106,7 @@ export class DsSelectComponent implements AfterContentInit {
     protected readonly tag = WA_TAGS.select;
     private theme = inject(DsThemeService);
 
-    @ViewChild('el', { static: true }) el!: ElementRef<HTMLElement & { value: any }>; // underlying element ref
+    @ViewChild('el', { static: true }) el!: ElementRef<HTMLElement & { value: any; }>; // underlying element ref
 
     // VALUE MANAGEMENT
     private internalValue = signal<string | string[] | null>(null);
@@ -126,8 +126,8 @@ export class DsSelectComponent implements AfterContentInit {
     singleValue = computed(() => (this.multiple ? '' : (this.internalValue() as string | null)) || '');
 
     // OPTIONS API
-    @Input() options?: Array<{ label: string; value: string; disabled?: boolean } | { label: string; options: { label: string; value: string; disabled?: boolean }[] }>;
-    isGroup = (o: any): o is { label: string; options: any[] } => !!o && Array.isArray((o as any).options);
+    @Input() options?: Array<{ label: string; value: string; disabled?: boolean; } | { label: string; options: { label: string; value: string; disabled?: boolean; }[]; }>;
+    isGroup = (o: any): o is { label: string; options: any[]; } => !!o && Array.isArray((o as any).options);
 
     // CORE INPUTS
     @Input() label?: string;
@@ -203,7 +203,7 @@ export class DsSelectComponent implements AfterContentInit {
     @Output() createEvent = new EventEmitter<string>();
 
     // LAZY LOAD HANDLER (user supplies optional callback)
-    @Input() lazyLoad?: () => Promise<Array<{ label: string; value: string }>>;
+    @Input() lazyLoad?: () => Promise<Array<{ label: string; value: string; }>>;
 
     // INTERNAL HELPERS
     private readCurrentValue(): string | string[] | null {

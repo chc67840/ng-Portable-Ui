@@ -1,6 +1,6 @@
-import { Component, Input, Output, EventEmitter, CUSTOM_ELEMENTS_SCHEMA, ViewChild, ElementRef, signal, HostBinding, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DsThemeService } from '../ds-theme.service';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, effect, ElementRef, EventEmitter, HostBinding, inject, Input, Output, signal, ViewChild } from '@angular/core';
+import { ThemeEngineService } from '../theme/theme-engine.service';
 import { computeUnderlineInputClass } from '../util/underline.util';
 
 /**
@@ -43,9 +43,9 @@ import { computeUnderlineInputClass } from '../util/underline.util';
   </label>
   `
 })
-export class DsDateTimeComponent {
-  private theme = inject(DsThemeService);
-  @ViewChild('el', { static: true }) el!: ElementRef<HTMLElement & { value: string }>;
+export class DsDateTimeComponent implements AfterViewInit {
+  private engine = inject(ThemeEngineService);
+  @ViewChild('el', { static: true }) el!: ElementRef<HTMLElement & { value: string; }>;
   private internal = signal<string>('');
   @Input() set value(v: string | null | undefined) { this.internal.set(v ?? ''); }
   get value(): string { return this.internal(); }
@@ -75,7 +75,7 @@ export class DsDateTimeComponent {
   @HostBinding('class.ds-input-invalid') get invalidClass() { return this.isInvalid; }
   @HostBinding('class.ds-input-disabled') get disabledClass() { return this.disabled; }
   private isInvalid = false;
-  get computedLabelClass(): string { return this.labelClass || this.theme.controlLabel(); }
+  get computedLabelClass(): string { return this.labelClass || 'text-[var(--ds-color-text-secondary)]'; }
   get computedWrapperClass(): string {
     let base = this.wrapperClass || '';
     if (this.labelPosition === 'inline') {
@@ -89,8 +89,8 @@ export class DsDateTimeComponent {
     return base.trim();
   }
   get computedInputClass(): string {
-    // Underline-only filled styling (standardized across inputs)
-  return computeUnderlineInputClass({ base: this.inputClass || this.theme.controlInputUnderlineFilled?.() });
+    const baseDefault = 'transition-colors outline-none disabled:cursor-not-allowed';
+    return computeUnderlineInputClass({ base: this.inputClass || baseDefault });
   }
 
   @Output() valueChange = new EventEmitter<string | null>();
@@ -116,4 +116,28 @@ export class DsDateTimeComponent {
     for (const [k, v] of Object.entries(this.cssVars)) { if (v == null) style.removeProperty(k); else style.setProperty(k, String(v)); }
   }
   ngAfterViewInit() { this.applyCssVars(); }
+  private applyThemeVars() {
+    const t = this.engine.active() as any;
+    const tokens = t.components.input as any;
+    const variant = tokens.variants.filled;
+    const vars: Record<string, string> = {
+      '--ds-input-height': tokens.height['md'],
+      '--ds-input-radius': `var(--ds-radius-${tokens.radius})`,
+      '--ds-input-padding-x': tokens.paddingX,
+      '--ds-input-padding-y': tokens.paddingY,
+      '--ds-input-font-size': tokens.fontSize,
+      '--ds-input-line-height': tokens.lineHeight,
+      '--ds-input-font-weight': tokens.weight,
+      '--ds-input-bg': variant.bg,
+      '--ds-input-fg': variant.fg,
+      '--ds-input-border': variant.border || 'transparent',
+      '--ds-input-ring': variant.ring || 'transparent',
+      '--ds-input-hover-bg': (variant as any).hoverBg || variant.bg,
+      '--ds-input-focus-bg': (variant as any).focusBg || variant.bg,
+      '--ds-input-placeholder': (variant as any).placeholder || 'currentColor'
+    };
+    this.cssVars = { ...(this.cssVars || {}), ...vars };
+    this.applyCssVars();
+  }
+  private _themeEff = effect(() => { this.applyThemeVars(); });
 }

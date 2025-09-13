@@ -1,6 +1,6 @@
-import { Component, Input, Output, EventEmitter, signal, computed, CUSTOM_ELEMENTS_SCHEMA, ViewChild, ElementRef, HostBinding, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DsThemeService } from '../ds-theme.service';
+import { AfterViewInit, Component, computed, CUSTOM_ELEMENTS_SCHEMA, effect, ElementRef, EventEmitter, HostBinding, inject, Input, Output, signal, ViewChild } from '@angular/core';
+import { ThemeEngineService } from '../theme/theme-engine.service';
 import { computeUnderlineInputClass } from '../util/underline.util';
 
 /**
@@ -50,9 +50,9 @@ import { computeUnderlineInputClass } from '../util/underline.util';
   `,
     styles: [`:host{display:block}`]
 })
-export class DsNumberComponent {
-    private theme = inject(DsThemeService);
-    @ViewChild('el', { static: true }) el!: ElementRef<HTMLElement & { value: string }>; // approximate typing
+export class DsNumberComponent implements AfterViewInit {
+    private engine = inject(ThemeEngineService);
+    @ViewChild('el', { static: true }) el!: ElementRef<HTMLElement & { value: string; }>; // approximate typing
 
     // Public API
     @Input() set value(v: number | null | undefined) {
@@ -96,7 +96,7 @@ export class DsNumberComponent {
     @HostBinding('class.ds-input-disabled') get disabledClass() { return this.disabled; }
     private isInvalid = false;
 
-    get computedLabelClass(): string { return this.labelClass || this.theme.controlLabel(); }
+    get computedLabelClass(): string { return this.labelClass || 'text-[var(--ds-color-text-secondary)]'; }
     get computedWrapperClass(): string {
         let base = this.wrapperClass || '';
         if (this.labelPosition === 'inline') {
@@ -109,7 +109,10 @@ export class DsNumberComponent {
         }
         return base.trim();
     }
-    get computedInputClass(): string { return computeUnderlineInputClass({ base: this.inputClass || this.theme.controlInputUnderlineFilled() }); }
+    get computedInputClass(): string {
+        const baseDefault = 'transition-colors outline-none disabled:cursor-not-allowed';
+        return computeUnderlineInputClass({ base: this.inputClass || baseDefault });
+    }
 
     @Output() valueChange = new EventEmitter<number | null>();
     @Output() inputEvent = new EventEmitter<number | null>(); // fires on every input
@@ -221,4 +224,28 @@ export class DsNumberComponent {
     }
     private resetInvalidIfNeeded() { if (this.isInvalid) this.isInvalid = false; }
     ngAfterViewInit() { this.applyCssVars(); }
+    private applyThemeVars() {
+        const t = this.engine.active() as any;
+        const tokens = t.components.input as any;
+        const variant = tokens.variants.filled;
+        const vars: Record<string, string> = {
+            '--ds-input-height': tokens.height['md'],
+            '--ds-input-radius': `var(--ds-radius-${tokens.radius})`,
+            '--ds-input-padding-x': tokens.paddingX,
+            '--ds-input-padding-y': tokens.paddingY,
+            '--ds-input-font-size': tokens.fontSize,
+            '--ds-input-line-height': tokens.lineHeight,
+            '--ds-input-font-weight': tokens.weight,
+            '--ds-input-bg': variant.bg,
+            '--ds-input-fg': variant.fg,
+            '--ds-input-border': variant.border || 'transparent',
+            '--ds-input-ring': variant.ring || 'transparent',
+            '--ds-input-hover-bg': (variant as any).hoverBg || variant.bg,
+            '--ds-input-focus-bg': (variant as any).focusBg || variant.bg,
+            '--ds-input-placeholder': (variant as any).placeholder || 'currentColor'
+        };
+        this.cssVars = { ...(this.cssVars || {}), ...vars };
+        this.applyCssVars();
+    }
+    private _themeEff = effect(() => { this.applyThemeVars(); });
 }

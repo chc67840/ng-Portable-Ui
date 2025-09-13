@@ -1,0 +1,13 @@
+<section class="max-w-5xl mx-auto px-6 py-10">
+    <h1 class="text-3xl font-bold tracking-tight mb-6">Documentation</h1>
+    <p class="text-slate-600 leading-relaxed text-sm mb-10">Concise reference for using the portable design system. This
+        placeholder will expand into structured guides and live examples.</p>
+    <div class="grid md:grid-cols-3 gap-6">
+        <div *ngFor="let s of sections"
+            class="p-4 rounded-lg border border-slate-200 bg-white/60 backdrop-blur flex flex-col gap-2">
+            <h2 class="font-semibold text-slate-800 text-sm">{{ s.title }}</h2>
+            <p class="text-xs text-slate-600">{{ s.summary }}</p>
+            <a class="text-xs text-indigo-600 hover:underline" [routerLink]="['/docs', s.id]">Read more →</a>
+        </div>
+    </div>
+</section>

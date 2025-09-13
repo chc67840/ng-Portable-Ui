@@ -1,0 +1,528 @@
+<!-- Full demo content migrated from original app.html (nav & drawer retained in App root) -->
+<div class="pt-0">
+    <!-- Tailwind verification block -->
+    <div
+        class="p-6 m-4 rounded-xl bg-gradient-to-r from-indigo-500 via-sky-500 to-emerald-400 text-white shadow-lg flex gap-4 items-center">
+        <div class="text-3xl font-bold drop-shadow">Tailwind OK</div>
+        <div class="hidden md:block text-sm opacity-80">Resize window to test responsive (this text hides < md)</div>
+                <button
+                    class="bg-white/20 hover:bg-white/30 active:scale-95 transition-all px-4 py-2 rounded-md font-medium">Test
+                    Button</button>
+        </div>
+
+        <!-- Dynamic Layout Demo (Phase 1 ds-custom) -->
+        <section class="m-4 p-4 border border-dashed border-slate-300 rounded-md bg-white/50 backdrop-blur">
+            <h2 class="text-sm font-semibold mb-3 text-slate-700">Dynamic Layout (ds-custom) – MVP</h2>
+            <ds-custom [schema]="demoLayout" [debug]="true"></ds-custom>
+        </section>
+
+        <!-- Unified Multi-Section Layout -->
+        <section class="m-4 p-6 border rounded-md bg-white/70 backdrop-blur shadow-sm">
+            <h2 class="text-sm font-semibold mb-4 text-slate-700">Unified Layout (Registration + Settings + Grid)</h2>
+            <ds-custom [schema]="unifiedLayoutSchema" [debug]="false"></ds-custom>
+        </section>
+
+        <!-- Original extensive demo sections preserved -->
+        <div class="m-4">
+            <!-- Cards / Details / Buttons (initially hidden examples) -->
+            <ds-card appearance="outlined" style="display: none;">
+                <div slot="header">Outlined Card</div>
+                <ds-text label="Name" type="password" placeholder="Type your name" help="Plain text (maxlength 10)"
+                    [maxlength]="10" (valueChange)="title.set($event)"></ds-text>
+                <ds-number class="mt-4" label="Age" [min]="0" [max]="120" [step]="1" hint="Numeric clamped 0-120"
+                    (valueChange)="ageNum = $event"></ds-number>
+                <ds-number class="mt-4" label="Price" [min]="0" [max]="9999" [step]="0.01" [precision]="2"
+                    placeholder="0.00" hint="Currency demo" (valueChange)="price = $event"></ds-number>
+                <ds-date class="mt-4" label="Birthday" hint="Pick a date" (valueChange)="birthday = $event"></ds-date>
+                <ds-time class="mt-4" label="Meeting Time" hint="Select time"
+                    (valueChange)="meetingTime = $event"></ds-time>
+                <ds-datetime class="mt-4" label="Appointment" hint="Local date & time"
+                    (valueChange)="appointment = $event"></ds-datetime>
+                <p class="mt-2 text-sm text-slate-600">Signal title: <span class="font-semibold">{{ title() }}</span>
+                </p>
+                <button id="infoBtn" (click)="togglePopup()"
+                    class="mt-4 px-3 py-1 rounded bg-slate-700 text-white text-sm hover:bg-slate-600">
+                    {{ popupOpen() ? 'Hide Info' : 'Show Info' }}
+                </button>
+                @if(popupOpen()){
+                <ds-popup [open]="popupOpen()" (openChange)="popupOpen.set($event)" anchor="infoBtn" placement="top-end"
+                    [distance]="8" [arrow]="true"
+                    wrapperClass="[&::part(popup)]:rounded-md [&::part(popup)]:shadow-lg [&::part(popup)]:bg-white [&::part(popup)]:border [&::part(popup)]:border-slate-200 [&::part(popup)]:p-3 [&::part(popup)]:w-64 text-sm"
+                    [cssVars]="{ '--popup-z': 60 }">
+                    <div class="font-semibold mb-1">Popup Title</div>
+                    <p class="text-slate-600 text-xs">This is a configurable popup wrapper demo.</p>
+                </ds-popup>
+                }
+                <div slot="footer">Footer text</div>
+            </ds-card>
+            <ds-card appearance="filled" [hasMedia]="true" style="display: none;">
+                <img slot="media" src="images/Rishi.jpg" alt="Sample" class="w-full h-100 object-cover" />
+                <div slot="header">Filled Card</div>
+                Filled body content with media header.
+                <div slot="footer">Updated 2m ago</div>
+            </ds-card>
+            <ds-details class="mt-6" [open]="false" summary="Quick Panel">
+                <div class="text-sm text-slate-600">Expandable details body. Customize icons via slots.</div>
+            </ds-details>
+            <!-- Divider demo -->
+            <div class="mt-10">
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-2">Divider Demo</p>
+                <div class="flex items-center gap-4">
+                    <span>Section A</span>
+                    <ds-divider [cssVars]="{ '--color': 'rgb(203 213 225)', '--width': '1px', '--spacing': '0' }"
+                        dividerClass="h-6" orientation="vertical"></ds-divider>
+                    <span>Section B</span>
+                    <ds-divider [cssVars]="{ '--color': 'rgb(148 163 184)', '--width': '1px', '--spacing': '0' }"
+                        dividerClass="h-6" orientation="vertical"></ds-divider>
+                    <span>Section C</span>
+                </div>
+                <ds-divider class="my-4"
+                    [cssVars]="{ '--color': 'rgb(226 232 240)', '--width': '1px', '--spacing': '0' }"></ds-divider>
+                <p class="text-sm text-slate-600">Above is a horizontal divider separating content.</p>
+            </div>
+
+            <!-- Split Panel Demo -->
+            <div class="mt-10">
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-2">Split Panel Demo</p>
+                <ds-split-panel [position]="50" orientation="horizontal"
+                    [cssVars]="{ '--divider-width': '6px', '--divider-hit-area': '16px' }"
+                    panelClass="relative h-64 border border-slate-200 rounded overflow-hidden"
+                    startClass="p-4 bg-slate-50" endClass="p-4 bg-white">
+                    <div slot="start" class="text-sm">
+                        <h4 class="font-semibold mb-2">Start Panel</h4>
+                        <p class="text-slate-600 text-xs">Resize by dragging divider.</p>
+                    </div>
+                    <div slot="end" class="text-sm">
+                        <h4 class="font-semibold mb-2">End Panel</h4>
+                        <p class="text-slate-600 text-xs">Supports snap points (future example).</p>
+                    </div>
+                </ds-split-panel>
+            </div>
+
+            <!-- Breadcrumb Demo -->
+            <div class="mt-10">
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-2">Breadcrumb Demo</p>
+                <ds-breadcrumb [items]="[{label:'Home', href:'#'},{label:'Library', href:'#'},{label:'Data', href:'#'}]"
+                    wrapperClass="flex items-center text-sm text-slate-600 gap-1"
+                    breadcrumbClass="inline-flex items-center gap-1" separatorClass="text-slate-400"
+                    itemClass="inline-flex items-center gap-1">
+                    <span slot="separator" class="text-slate-400">/</span>
+                </ds-breadcrumb>
+            </div>
+
+            <!-- Tab Group Demo -->
+            <div class="mt-10">
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-2">Tab Group Demo</p>
+                <ds-tab-group
+                    [tabs]="[{name:'one',label:'One',content:'<p class=\'text-xs text-slate-600\'>First panel</p>'},{name:'two',label:'Two',content:'<p class=\'text-xs text-slate-600\'>Second panel</p>',closable:true},{name:'three',label:'Three',content:'<p class=\'text-xs text-slate-600\'>Third panel</p>'}]"
+                    [active]="'one'" activation="auto" groupClass="block"
+                    [cssVars]="{ '--indicator-color': 'var(--wa-color-brand-600,#6366f1)', '--track-color': 'rgb(226 232 240)', '--track-width': '1px' }"></ds-tab-group>
+            </div>
+
+            <!-- Tree Demo -->
+            <div class="mt-10">
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-2">Tree Demo</p>
+                <ds-tree [nodes]="treeNodes" selection="multiple" (selectionChange)="onTreeSelection($event)"
+                    (itemLazyLoad)="onTreeLazyLoad($event)"
+                    [cssVars]="{ '--indent-size':'1.25rem', '--indent-guide-color':'#e2e8f0' }"
+                    [showIndentGuide]="true"></ds-tree>
+                <div class="mt-2 text-xs text-slate-600">Selected: {{ selectedTree() | json }}</div>
+            </div>
+
+            <!-- Avatar Demo -->
+            <div class="mt-10">
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-2">Avatar Demo</p>
+                <div class="flex items-center gap-6 flex-wrap">
+                    <ds-avatar size="small" initials="AB"
+                        avatarClass="[&::part(base)]:bg-indigo-100 [&::part(base)]:text-indigo-700"></ds-avatar>
+                    <ds-avatar src="https://via.placeholder.com/64" alt="User" shape="rounded"
+                        size="medium"></ds-avatar>
+                    <ds-avatar src="https://via.placeholder.com/80" shape="square" size="large"
+                        status="online"></ds-avatar>
+                    <ds-avatar initials="ZX" size="large"><ds-icon slot="icon" name="user" family="classic"
+                            variant="solid"></ds-icon></ds-avatar>
+                    <ds-avatar size="xlarge" initials="JS"
+                        [cssVars]="{ '--ring-width':'2px', '--ring-color':'#6366f1' }"></ds-avatar>
+                </div>
+                <div class="mt-4">
+                    <ds-avatar-group size="small" overlap="medium" [cssVars]="{ '--overlap':'-0.5rem' }"
+                        groupClass="[&::part(base)]:flex -space-x-2">
+                        <ds-avatar initials="AA" avatarClass="[&::part(base)]:bg-slate-200"></ds-avatar>
+                        <ds-avatar initials="BB" avatarClass="[&::part(base)]:bg-indigo-200"></ds-avatar>
+                        <ds-avatar initials="CC" avatarClass="[&::part(base)]:bg-emerald-200"></ds-avatar>
+                        <ds-avatar initials="DD" avatarClass="[&::part(base)]:bg-rose-200"></ds-avatar>
+                    </ds-avatar-group>
+                </div>
+            </div>
+
+            <!-- Switch Demo -->
+            <div class="mt-10">
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-2">Switch Demo</p>
+                <div class="flex flex-col gap-4">
+                    <ds-switch label="Enable Feature" [(checked)]="featureEnabled" hint="Toggle a feature"
+                        [cssVars]="{ '--switch-track-color':'#e2e8f0', '--switch-thumb-color': featureEnabled ? '#6366f1' : '#94a3b8' }"
+                        (checkedChange)="onFeatureToggle($event)"></ds-switch>
+                    <div class="text-xs text-slate-600">Feature Enabled: <span class="font-semibold">{{ featureEnabled
+                            }}</span></div>
+                    <ds-switch label="Disabled" [disabled]="true" [checked]="true" size="small"
+                        hint="Disabled state"></ds-switch>
+                    <ds-switch label="Large Pill" size="large" [checked]="true" hint="Custom size"
+                        [cssVars]="{ '--switch-track-color':'#6366f1', '--switch-thumb-color':'white' }"></ds-switch>
+                </div>
+            </div>
+
+            <!-- Radio Group Demo -->
+            <div class="mt-10">
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-2">Radio Group Demo</p>
+                <ds-radio-group label="Theme" [options]="[
+        {label:'Light', value:'light'},
+        {label:'Dark', value:'dark'},
+        {label:'System', value:'system'}
+      ]" orientation="horizontal" (valueChange)="selectedThemeOption = $event" [cssVars]="{ '--gap':'1rem' }"
+                    [value]="selectedThemeOption"></ds-radio-group>
+                <div class="text-xs text-slate-600 mt-2">Selected: {{ selectedThemeOption || 'none' }}</div>
+                <ds-radio-group class="mt-4" label="Size" orientation="vertical" [options]="[
+        {label:'Small', value:'sm'},
+        {label:'Medium', value:'md'},
+        {label:'Large', value:'lg'}
+      ]" size="small" [disabled]="false" hint="Choose a size" (valueChange)="selectedSize = $event"></ds-radio-group>
+            </div>
+
+            <!-- Spinner Demo -->
+            <div class="mt-10">
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-2">Spinner Demo</p>
+                <div class="flex flex-wrap gap-6 items-center">
+                    <ds-spinner size="small" [showHint]="true" hint="Small"></ds-spinner>
+                    <ds-spinner size="medium" [showHint]="true" hint="Medium"
+                        [indicatorColor]="'var(--wa-color-brand-600,#6366f1)'" [trackColor]="'#e2e8f0'"></ds-spinner>
+                    <ds-spinner size="large" [showHint]="true" hint="Large" [trackWidth]="4" [speed]="'900ms'"
+                        [cssVars]="{ '--indicator-color':'#10b981' }"></ds-spinner>
+                    <ds-spinner size="large" [checked]="false" [showHint]="true" hint="Hidden (unchecked)"
+                        spinnerClass="opacity-40"></ds-spinner>
+                    <ds-spinner size="medium" [disabled]="true" [showHint]="true" hint="Disabled"
+                        spinnerClass="opacity-50"></ds-spinner>
+                </div>
+            </div>
+
+            <!-- Progress Ring Demo -->
+            <div class="mt-10">
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-2">Progress Ring Demo</p>
+                <div class="flex flex-wrap gap-10 items-center">
+                    <div class="flex flex-col items-center gap-2">
+                        <ds-progress-ring [value]="25" [sizePx]="56" [trackWidth]="4" [indicatorWidth]="4"
+                            [showLabel]="true" ringClass="[&::part(base)]:transition-all"
+                            labelClass="text-[10px] font-medium text-slate-600"
+                            [cssVars]="{ '--track-color':'#e2e8f0', '--indicator-color':'#6366f1' }"></ds-progress-ring>
+                        <span class="text-[10px] text-slate-500">Small 25%</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2">
+                        <ds-progress-ring [value]="62" [sizePx]="96" [trackWidth]="6" [indicatorWidth]="6"
+                            indicatorDuration="0.6s" [cssVars]="{ '--indicator-color':'#10b981' }"
+                            labelClass="text-xs font-semibold text-emerald-600"></ds-progress-ring>
+                        <span class="text-[10px] text-slate-500">Medium 62%</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2">
+                        <ds-progress-ring [value]="90" [sizePx]="140" [trackWidth]="8" [indicatorWidth]="8"
+                            indicatorColor="#f59e0b" trackColor="#f1f5f9"
+                            labelClass="text-sm font-semibold text-amber-600"></ds-progress-ring>
+                        <span class="text-[10px] text-slate-500">Large 90%</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 opacity-50 pointer-events-none">
+                        <ds-progress-ring [value]="40" [sizePx]="96" [disabled]="true" [trackWidth]="6"
+                            [indicatorWidth]="6" indicatorColor="#94a3b8" trackColor="#e2e8f0"
+                            [showLabel]="true"></ds-progress-ring>
+                        <span class="text-[10px] text-slate-500">Disabled</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2">
+                        <ds-progress-ring [value]="valueDynamic || 70" [sizePx]="110" [trackWidth]="6"
+                            [indicatorWidth]="6" [showLabel]="true" ringClass="[&::part(base)]:cursor-pointer"
+                            (clickEvent)="valueDynamic = ( (valueDynamic||70) + 10 ) % 110"
+                            [cssVars]="{ '--indicator-color':'#ec4899' }"
+                            labelClass="text-xs font-semibold text-pink-600"></ds-progress-ring>
+                        <span class="text-[10px] text-slate-500">Click to advance</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Textarea Demo -->
+            <div class="mt-10">
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-2">Textarea Demo</p>
+                <ds-textarea label="Description" placeholder="Type details" hint="Auto expands" [expand]="true"
+                    [maxRows]="8" [rows]="3" (valueChange)="description = $event"
+                    [cssVars]="{ '--wa-input-border-color':'#e2e8f0' }"></ds-textarea>
+                <ds-textarea class="mt-4" label="Readonly" [readonly]="true" value="Pre-filled content"
+                    hint="Readonly state"></ds-textarea>
+                <ds-textarea class="mt-4" label="No Resize" [resize]="'none'" placeholder="Fixed size" [rows]="4"
+                    hint="Resize disabled"></ds-textarea>
+            </div>
+
+            <!-- Tooltip Demo -->
+            <div class="mt-10">
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-2">Tooltip Demo</p>
+                <div class="flex flex-wrap gap-6 items-center">
+                    <ds-tooltip content="Simple top tooltip" placement="top"><ds-button appearance="outlined"
+                            size="small">Hover Top</ds-button></ds-tooltip>
+                    <ds-tooltip content="Right aligned" placement="right"
+                        [cssVars]="{ '--max-width':'200px' }"><ds-button appearance="outlined" size="small">Hover
+                            Right</ds-button></ds-tooltip>
+                    <ds-tooltip content="Click trigger" [clickTrigger]="true" placement="bottom-start"><ds-button
+                            appearance="outlined" size="small">Click Me</ds-button></ds-tooltip>
+                    <ds-tooltip [manualTrigger]="true" [open]="tooltipManualOpen" content="Manual control tooltip"
+                        placement="bottom" [arrow]="false">
+                        <ds-button appearance="outlined" size="small"
+                            (click)="tooltipManualOpen = !tooltipManualOpen">Manual {{ tooltipManualOpen ? 'Hide' :
+                            'Show' }}</ds-button>
+                    </ds-tooltip>
+                    <ds-tooltip placement="bottom"
+                        [cssVars]="{ '--max-width':'160px', '--tooltip-bg':'#1e293b', '--tooltip-color':'white' }">
+                        <ds-button appearance="filled" size="small" variant="brand">HTML</ds-button>
+                        <div tooltip class="text-xs"><strong>Bold</strong> and <em>italic</em> mixed content.</div>
+                    </ds-tooltip>
+                </div>
+            </div>
+
+            <!-- Tag (TA) Demo -->
+            <div class="mt-10">
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-2">Tag (TA) Demo</p>
+                <div class="flex flex-wrap gap-3 items-center">
+                    <ds-ta appearance="filled" size="small" [variant]="'danger'">Small Filled</ds-ta>
+                    <ds-ta appearance="outlined" [pill]="true" size="medium">Outlined Pill</ds-ta>
+                    <ds-ta appearance="soft" [removable]="true" (removeEvent)="onTagRemoved($event)"
+                        [cssVars]="{ '--bg':'#eef2ff' }">Removable Soft</ds-ta>
+                    <ds-ta appearance="filled" [disabled]="true">Disabled</ds-ta>
+                    <ds-ta appearance="filled" [cssVars]="{ '--color':'white', '--bg':'#6366f1' }"><span
+                            slot="start"><ds-icon name="tag" family="classic" variant="solid"
+                                iconClass="text-white"></ds-icon></span>Branded</ds-ta>
+                </div>
+            </div>
+
+            <!-- Badge Demo -->
+            <div class="mt-10">
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-2">Badge Demo</p>
+                <div class="flex flex-wrap gap-3 items-center">
+                    <ds-badge appearance="filled" variant="primary">Primary</ds-badge>
+                    <ds-badge appearance="outlined" variant="success" [pill]="true">Success Pill</ds-badge>
+                    <ds-badge appearance="soft" variant="warning" [pulse]="true">Warning Pulse</ds-badge>
+                    <ds-badge appearance="filled" variant="danger" [removable]="true"
+                        (removeEvent)="onBadgeRemoved($event)"
+                        [cssVars]="{ '--badge-bg':'#fee2e2', '--badge-color':'#b91c1c' }">Removable</ds-badge>
+                    <ds-badge appearance="filled" variant="neutral" [disabled]="true">Disabled</ds-badge>
+                    <ds-badge appearance="filled" variant="primary"
+                        [cssVars]="{ '--badge-bg':'#6366f1', '--badge-color':'#fff' }"><span slot="start"><ds-icon
+                                name="circle-info" family="classic" variant="solid"
+                                iconClass="text-white"></ds-icon></span>Icon</ds-badge>
+                </div>
+            </div>
+
+            <!-- Callout Demo -->
+            <div class="mt-10">
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-2">Callout Demo</p>
+                <div class="flex flex-col gap-4">
+                    <ds-callout appearance="outlined filled" variant="brand" size="small" [showHint]="true"
+                        hint="Small size"
+                        calloutClass="[&::part(icon)]:mr-3 [&::part(message)]:text-xs p-3 rounded-md border border-slate-200 bg-white">
+                        <div slot="icon"><ds-icon name="circle-info" family="classic" variant="solid"
+                                iconClass="text-indigo-600"></ds-icon></div>
+                        Brand small callout with combined outlined + filled appearance.
+                    </ds-callout>
+                    <ds-callout appearance="filled" variant="warning" size="medium"
+                        calloutClass="[&::part(icon)]:mr-3 [&::part(message)]:text-xs p-4 rounded-md"
+                        [cssVars]="{ '--wa-color-fill-quiet':'#fef9c3', '--wa-color-border-quiet':'#fde047' }">
+                        <div slot="icon"><ds-icon name="triangle-exclamation" family="classic" variant="solid"
+                                iconClass="text-amber-600"></ds-icon></div>
+                        Warning medium callout with custom fill colors.
+                    </ds-callout>
+                    <ds-callout appearance="outlined" variant="danger" size="large" [showHint]="true"
+                        hint="Large outlined"
+                        calloutClass="[&::part(icon)]:mr-4 [&::part(message)]:text-sm p-5 rounded-md border border-rose-300 bg-rose-50">
+                        <div slot="icon"><ds-icon name="circle-xmark" family="classic" variant="solid"
+                                iconClass="text-rose-600"></ds-icon></div>
+                        Danger large callout emphasizing an error state.
+                    </ds-callout>
+                    <ds-callout appearance="outlined filled" variant="success" [hideIcon]="true" size="medium"
+                        calloutClass="[&::part(message)]:text-xs p-4 rounded-md border border-emerald-300 bg-emerald-50">
+                        Success callout without icon; operations completed successfully.
+                    </ds-callout>
+                    <ds-callout appearance="outlined filled" variant="neutral" size="medium"
+                        calloutClass="[&::part(icon)]:mr-3 [&::part(message)]:text-xs p-4 rounded-lg border border-slate-200 bg-slate-50"
+                        [cssVars]="{ '--wa-color-fill-quiet':'#f1f5f9' }">
+                        <div slot="icon"><ds-icon name="rocket" family="classic" variant="solid"
+                                iconClass="text-slate-600"></ds-icon></div>
+                        Neutral callout with custom quiet fill color.
+                    </ds-callout>
+                </div>
+            </div>
+
+            <!-- Toast Demo -->
+            <div class="mt-10">
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-2">Toast Demo</p>
+                <ds-button appearance="filled" variant="brand" size="small" (click)="addDemoToast()">Show
+                    Toast</ds-button>
+                <ds-toast-container></ds-toast-container>
+            </div>
+
+            <!-- Dropdown Demo Section -->
+            <section class="mt-12 space-y-6">
+                <h2 class="text-lg font-semibold">Dropdown Demo</h2>
+                <div class="flex flex-wrap gap-6">
+                    <ds-dropdown [items]="[
+          { label: 'New File', value: 'new_file', iconHtml: '<wa-icon name=\'file\'></wa-icon>' },
+          { label: 'Open...', value: 'open' },
+          { divider: true },
+          { label: 'Save', value: 'save', disabled: true },
+          { label: 'Rename', value: 'rename' },
+          { divider: true },
+          { label: 'Danger Action', value: 'danger', danger: true }
+        ]" triggerLabel="File"></ds-dropdown>
+                    <ds-dropdown [items]="[
+          { label: 'Wrap Lines', value: 'wrap', checkbox: true, checked: true },
+          { label: 'Minimap', value: 'minimap', checkbox: true },
+          { label: 'Render Whitespace', value: 'ws', checkbox: true, details: 'Ctrl+Shift+W' },
+          { divider: true },
+          { label: 'Settings', value: 'settings', details: 'Ctrl+,' }
+        ]" triggerLabel="View"></ds-dropdown>
+                    <ds-dropdown [items]="[
+          { label: 'Share', value: 'share', submenu: [
+              { label: 'Copy Link', value: 'copy_link' },
+              { label: 'Email', value: 'email' },
+              { label: 'Embed', value: 'embed' }
+            ] },
+          { label: 'Export', value: 'export', submenu: [
+              { label: 'PDF', value: 'pdf' },
+              { label: 'Markdown', value: 'md' },
+              { label: 'HTML', value: 'html' }
+            ] }
+        ]" triggerLabel="Share"></ds-dropdown>
+                    <ds-dropdown [placement]="'top-start'" [distance]="2" [skidding]="8" [items]="[
+          { label: 'Top Item 1', value: 't1' },
+          { label: 'Top Item 2', value: 't2' }
+        ]" triggerLabel="Top Start"></ds-dropdown>
+                </div>
+            </section>
+
+            <!-- Button Group Examples -->
+            <section class="mt-12 space-y-6">
+                <h2 class="text-lg font-semibold">Button Group Examples</h2>
+                <div class="flex flex-col gap-6">
+                    <div>
+                        <div class="text-sm font-medium mb-2">Sizes & Variants</div>
+                        <ds-button-group [items]="[
+            { label: 'Small', value: 's', size: 'small' },
+            { label: 'Medium', value: 'm' },
+            { label: 'Large', value: 'l', size: 'large', variant: 'brand' }
+          ]"></ds-button-group>
+                    </div>
+                    <div>
+                        <div class="text-sm font-medium mb-2">Pill Buttons + Icons</div>
+                        <ds-button-group [items]="[
+            { label: 'Bold', value: 'bold', pill: true, iconHtml: '<wa-icon name=\'bold\'></wa-icon>' },
+            { label: 'Italic', value: 'italic', pill: true, iconHtml: '<wa-icon name=\'italic\'></wa-icon>' },
+            { label: 'Underline', value: 'underline', pill: true, iconHtml: '<wa-icon name=\'underline\'></wa-icon>' }
+          ]" variant="neutral"></ds-button-group>
+                    </div>
+                    <div>
+                        <div class="text-sm font-medium mb-2">Dropdown in Group</div>
+                        <ds-button-group [items]="[
+            { label: 'Run', value: 'run', iconHtml: '<wa-icon name=\'play\'></wa-icon>' },
+            { label: 'Environment', value: 'env', dropdownItems: [
+              { label: 'Dev', value: 'dev' }, { label: 'Staging', value: 'staging' }, { label: 'Prod', value: 'prod', danger: true }
+            ] }
+          ]"></ds-button-group>
+                    </div>
+                    <div>
+                        <div class="text-sm font-medium mb-2">Split Button</div>
+                        <ds-button-group [items]="[
+            { label: 'Deploy', value: 'deploy', split: true, dropdownItems: [
+              { label: 'Deploy to Dev', value: 'dep_dev' },
+              { label: 'Deploy to Staging', value: 'dep_stg' },
+              { label: 'Deploy to Prod', value: 'dep_prod', danger: true }
+            ] }
+          ]" variant="brand"></ds-button-group>
+                    </div>
+                    <div>
+                        <div class="text-sm font-medium mb-2">Toolbar Example</div>
+                        <ds-button-group toolbar [items]="[
+            { label: 'Cut', value: 'cut', iconHtml: '<wa-icon name=\'scissors\'></wa-icon>', tooltip: 'Cut (Ctrl+X)' },
+            { label: 'Copy', value: 'copy', iconHtml: '<wa-icon name=\'copy\'></wa-icon>', tooltip: 'Copy (Ctrl+C)' },
+            { label: 'Paste', value: 'paste', iconHtml: '<wa-icon name=\'clipboard\'></wa-icon>', tooltip: 'Paste (Ctrl+V)' },
+            { label: 'Format', value: 'format', dropdownItems: [ { label: 'Prettify', value: 'prettify' }, { label: 'Minify', value: 'minify' } ], iconHtml: '<wa-icon name=\'wand-magic\'></wa-icon>' }
+          ]" variant="neutral" size="small"></ds-button-group>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Popover Examples -->
+            <section class="mt-12 space-y-6">
+                <h2 class="text-lg font-semibold">Popover Examples</h2>
+                <div class="flex flex-wrap gap-8 items-start">
+                    <div class="flex flex-col items-start gap-2">
+                        <button id="helpBtn" type="button" class="px-2 py-1 rounded border text-sm">Help</button>
+                        <ds-popover [forId]="'helpBtn'" [open]="false" placement="bottom-start" [distance]="6"
+                            maxWidth="18rem">
+                            <div>
+                                <h3 class="font-semibold mb-1">Quick Help</h3>
+                                <p class="text-sm leading-snug">Use the controls above to explore the design system
+                                    components. This popover is anchored via the for attribute.</p>
+                            </div>
+                        </ds-popover>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <div class="flex gap-2">
+                            <button id="infoAnchor" type="button"
+                                class="px-2 py-1 rounded bg-indigo-600 text-white text-sm">Info</button>
+                            <button type="button" class="px-2 py-1 rounded border text-sm"
+                                (click)="openInfoPopover()">Open</button>
+                            <button type="button" class="px-2 py-1 rounded border text-sm"
+                                (click)="closeInfoPopover()">Close</button>
+                        </div>
+                        <ds-popover [forId]="'infoAnchor'" id="infoPopover" arrowSize="0.75rem" placement="right"
+                            [distance]="8" [skidding]="4" maxWidth="14rem">
+                            <div class="text-sm">Custom arrow size + placement=right with distance/skidding offsets.
+                            </div>
+                        </ds-popover>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <button id="formAnchor" type="button"
+                            class="px-2 py-1 rounded bg-emerald-600 text-white text-sm">Form</button>
+                        <ds-popover [forId]="'formAnchor'" [autoFocus]="true" withoutArrow placement="bottom-end"
+                            maxWidth="16rem">
+                            <form class="flex flex-col gap-2 text-sm">
+                                <label class="flex flex-col gap-1">Name
+                                    <input type="text" class="border rounded px-2 py-1" placeholder="Your name">
+                                </label>
+                                <label class="flex flex-col gap-1">Email
+                                    <input type="email" class="border rounded px-2 py-1" placeholder="you@example.com">
+                                </label>
+                                <button type="button"
+                                    class="self-end mt-1 bg-emerald-600 text-white px-2 py-1 rounded text-xs">Submit</button>
+                            </form>
+                        </ds-popover>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Grid Demo -->
+            <section class="mt-12 space-y-4">
+                <div class="flex items-center justify-between gap-4 flex-wrap">
+                    <h2 class="text-lg font-semibold">Grid Demo</h2>
+                    <div class="flex gap-2 items-center text-xs">
+                        <input #qf type="text" placeholder="Quick filter" class="border rounded px-2 py-1 text-xs"
+                            (input)="gridCmp.setQuickFilter(qf.value)" />
+                        <button type="button" class="px-2 py-1 border rounded" (click)="gridCmp.exportCsv()">Export
+                            CSV</button>
+                        <button type="button" class="px-2 py-1 border rounded"
+                            (click)="gridCmp.sizeToFit()">Fit</button>
+                        <button type="button" class="px-2 py-1 border rounded"
+                            (click)="gridCmp.autoSizeAllColumns()">Auto Size</button>
+                        <button type="button" class="px-2 py-1 border rounded" (click)="toggleGridLoading()">{{
+                            gridLoading ? 'Hide' : 'Show' }} Loading</button>
+                        <span class="text-slate-500">Selected: {{ selectedRowsCount }}</span>
+                    </div>
+                </div>
+                <ds-grid #gridCmp [rowData]="gridRowData" [columnDefs]="gridColumnDefs" [pagination]="true"
+                    [paginationPageSize]="10" [rowSelection]="'multiple'" [height]="360" [loading]="gridLoading"
+                    [cssVars]="{ '--ag-foreground-color':'#1e293b', '--ag-header-background-color':'#f8fafc', '--ag-row-hover-color':'#e2e8f0' }"
+                    (gridReady)="onGridReady($event)" (selectionChanged)="onGridSelection($event)"></ds-grid>
+            </section>
+        </div>
+    </div>
