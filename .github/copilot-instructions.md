@@ -1,6 +1,6 @@
 # Copilot Instructions for nG-Portable-UI
 
-> Status: Angular 20 standalone app + Tailwind v3 + Web Awesome input. Standardized wrappers (text, number, date, time, datetime) with theming hooks added.
+> Status: Angular 20 standalone app + Tailwind v3 + Web Awesome input. Standardized wrappers (text, number, date, time, datetime) with theming hooks added. DsComponentsModule removed (standalone only). Underline-only filled input styling centralized via `computeUnderlineInputClass` util.
 
 ## Purpose
 Provide concise, project-specific guidance so AI coding agents can act productively with minimal back-and-forth.
@@ -53,21 +53,22 @@ Add utilities by editing `app.html` or component templates; rebuild is automatic
 ## Completed Steps
 1. Scaffold + Tailwind + PostCSS configured.
 2. Web Awesome base + component scripts imported as used.
-3. Form wrappers: ds-text, ds-number, ds-date, ds-time, ds-datetime, ds-select, ds-switch, ds-radio-group, ds-textarea, ds-avatar, ds-avatar-group.
+3. Form wrappers: ds-text, ds-number, ds-date, ds-time, ds-datetime, ds-select, ds-switch, ds-radio-group, ds-textarea, ds-avatar, ds-avatar-group (underline style via shared util).
 4. Feedback/status: ds-tooltip, ds-spinner (size map + semantic checked), ds-ta (tag), ds-badge (pulse/removable), ds-callout, ds-progress-ring (animateTo + autoAnimate).
 5. Navigation/structure: ds-nav, ds-breadcrumb, ds-tab-group, ds-tree, ds-draw.
 6. Utility/layout: ds-popup, ds-card, ds-details, ds-dialog, ds-divider, ds-split-panel, ds-button, ds-icon.
 7. Unified API (value/valueChange + *Class hooks + cssVars) established; events re‑emitted as neutral Angular Outputs.
-8. Registry file ensures single vendor mapping point.
-9. Demo (`app.html`) exercises variants, sizes, disabled states, custom CSS variables.
-10. Progress ring animation helper with easing + duration.
+8. Central underline styling extracted to `src/lib/util/underline.util.ts` used by all text-like controls.
+9. Registry file ensures single vendor mapping point.
+10. Demo (`app.html`) exercises variants, sizes, disabled states, custom CSS variables.
+11. Progress ring animation helper with easing + duration.
 
 ## Next Implementation Steps (priority)
 1. Theming extraction: central token file `src/styles/_tokens.scss`; apply selected theme to `:root`.
 2. AG Grid integration -> ds-grid wrapper (rowData, columnDefs, pagination?).
 3. ds-number optional locale formatting.
 4. Toast system (ds-toast + ds-toast-container service driven) with queue, variants, auto-dismiss, pause-on-hover.
-5. Unit tests (attribute reflection, event emissions, progress ring animateTo timing) + GitHub Actions CI.
+5. Unit tests (attribute reflection, event emissions, progress ring animateTo timing, underline util application) + GitHub Actions CI.
 6. Accessibility audit: aria-label roles for ring/spinner, focus management for dismissible chips/badges.
 7. Documentation site generation (later) or Storybook-style docs.
 
@@ -75,7 +76,7 @@ Add utilities by editing `app.html` or component templates; rebuild is automatic
 - No raw `<wa-*>` tags in app templates (always ds-* wrappers).
 - Inputs: core (value, label, hint/help, disabled, placeholder) + specialized (min/max/step/precision, size variants, appearance/variant, animation settings, etc.).
 - Outputs: valueChange, changeEvent, focusEvent, blurEvent, clearEvent, removeEvent, clickEvent, custom toggles.
-- Styling: `*Class` hooks + `cssVars` object (direct custom property mapping). Consumers supply valid `--` names.
+- Styling: `*Class` hooks + `cssVars` object (direct custom property mapping). Consumers supply valid `--` names. Underline-only filled control style centralized in `computeUnderlineInputClass` util.
 - Central vendor tag mapping in `wa-registry.ts`.
 - CUSTOM_ELEMENTS_SCHEMA used on each wrapper component.
 - Animation helpers where applicable (progress ring: animateTo/autoAnimate).
@@ -88,7 +89,7 @@ Add utilities by editing `app.html` or component templates; rebuild is automatic
 ## Adding New Web Awesome Elements
 1. Import component script in `main.ts`.
 2. Add tag constant to `wa-registry.ts`.
-3. Create ds-* wrapper replicating pattern (Inputs/Outputs/cssVars/class hooks).
+3. Create ds-* wrapper replicating pattern (Inputs/Outputs/cssVars/class hooks). For text-like or select-like inputs re-use `computeUnderlineInputClass` for underline style consistency.
 4. Expose vendor CSS vars via `cssVars` pass-through or typed convenience Inputs.
 5. Add demo usage (variants + disabled + custom styling) in `app.html`.
 6. Update this document (Completed Steps, Next Steps, patterns if new).
@@ -119,6 +120,12 @@ When adding a wrapper or vendor integration, append to: Completed Steps, Next Im
         Inputs/outputs on ds-* use neutral names: value, valueChange, label, placeholder, etc.
 
         Grid columns passed as { field, headerName, width?, editable? }.
+
+## Removed Aggregator Module
+`DsComponentsModule` has been removed in favor of pure standalone component imports. Import needed ds-* components directly in consumers.
+
+## Shared Underline Style
+All underline-only filled styling logic is centralized in `src/lib/util/underline.util.ts` via `computeUnderlineInputClass`. New text/date/number/select/time/datetime/textarea style wrappers should call this util instead of duplicating regex logic.
 
 
 
