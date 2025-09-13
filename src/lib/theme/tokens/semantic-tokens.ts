@@ -160,6 +160,36 @@ export interface ThemeMeta {
 export const SEMANTIC_THEMES: ThemeMeta[] = [
     { name: 'light', semantic: lightSemanticTokens },
     { name: 'dark', semantic: darkSemanticTokens },
+    // Amber dark variant (pairs with amber but with dark surfaces)
+    {
+        name: 'amber-dark', semantic: {
+            ...darkSemanticTokens,
+            colors: {
+                ...darkSemanticTokens.colors,
+                primary: { 50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 800: '#92400e', 900: '#78350f' },
+                accent: { 50: '#fff1f2', 100: '#ffe4e6', 200: '#fecdd3', 300: '#fda4af', 400: '#fb7185', 500: '#f43f5e', 600: '#e11d48', 700: '#be123c', 800: '#9f1239', 900: '#881337' },
+                bg: { base: '#1e293b', subtle: '#283548', elevated: '#334155', overlay: 'rgba(15,23,42,0.7)' },
+                border: { subtle: '#475569', strong: '#64748b', focus: '#f59e0b' },
+                text: { primary: '#fef3c7', secondary: '#fde68a', inverse: '#1e293b' },
+                shadowColor: '0 0 0 1px rgba(255,255,255,0.05)'
+            }
+        }
+    },
+    // Amber theme (warm amber primary palette, soft amber surfaces)
+    {
+        name: 'amber', semantic: {
+            ...lightSemanticTokens,
+            colors: {
+                ...lightSemanticTokens.colors,
+                primary: { 50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 800: '#92400e', 900: '#78350f' },
+                accent: { 50: '#fff1f2', 100: '#ffe4e6', 200: '#fecdd3', 300: '#fda4af', 400: '#fb7185', 500: '#f43f5e', 600: '#e11d48', 700: '#be123c', 800: '#9f1239', 900: '#881337' },
+                bg: { base: '#fffbeb', subtle: '#fef3c7', elevated: '#ffffff', overlay: 'rgba(120,53,15,0.45)' },
+                border: { subtle: '#fde68a', strong: '#fbbf24', focus: '#f59e0b' },
+                text: { primary: '#78350f', secondary: '#92400e', inverse: '#ffffff' },
+                shadowColor: '0 0 0 1px rgba(120,53,15,0.08)'
+            }
+        }
+    },
     // Ocean theme (sky primary palette, subtle blue backgrounds)
     {
         name: 'ocean', semantic: {

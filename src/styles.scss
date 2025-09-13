@@ -1,8 +1,10 @@
+@use 'styles/tokens';
+/* Tailwind directives must follow @use rules */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* AG Grid theme */
+/* AG Grid theme (plain CSS -> keep @import to avoid @use ordering constraint) */
 @import 'ag-grid-community/styles/ag-grid.css';
 @import 'ag-grid-community/styles/ag-theme-quartz.css';
 
@@ -17,6 +19,19 @@ body {
     color: var(--ds-color-text-primary);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+}
+
+/* Theme transition (applies when body has ds-theme-transitioning class) */
+body.ds-theme-transitioning {
+    transition: background-color 300ms var(--ds-easing-standard, cubic-bezier(.4, 0, .2, 1)),
+        color 300ms var(--ds-easing-standard, cubic-bezier(.4, 0, .2, 1));
+}
+
+/* Smoothly transition common surfaces */
+body.ds-theme-transitioning :where(.ds-surface, ds-nav-tree, header, main, footer) {
+    transition: background-color 300ms var(--ds-easing-standard, cubic-bezier(.4, 0, .2, 1)),
+        color 300ms var(--ds-easing-standard, cubic-bezier(.4, 0, .2, 1)),
+        border-color 300ms var(--ds-easing-standard, cubic-bezier(.4, 0, .2, 1));
 }
 
 /* Web Awesome reset / neutralization layer.

@@ -1,14 +1,16 @@
-<ds-nav [items]="navItems" brand="nG Portable UI" [rightContent]="true"
-  [wrapperClass]="'h-16 flex items-center gap-4 px-6 bg-[var(--ds-bg-base)] text-[var(--ds-color-text-primary)] rounded-b-2xl shadow-[0_8px_18px_-8px_rgba(0,0,0,0.25)] shadow-black/10 relative overflow-hidden transition-colors'"
-  [fixed]="false" [sticky]="true" [showBorder]="false" borderStyle="gradient" height="h-16" itemsAlign="center"
-  brandClass="text-base font-semibold tracking-wide no-underline decoration-none" variant="top-pill"
-  [activeItemClass]="'text-[var(--ds-color-text-primary)] before:h-2'"
-  [inactiveItemClass]="'text-slate-600 hover:text-slate-900 hover:before:h-2 hover:before:bg-indigo-600'">
-  <button right
-    class="text-sm px-3 py-1 rounded bg-[var(--ds-color-primary-600)] text-white hover:bg-[var(--ds-color-primary-500)] active:scale-95 transition-colors">Login</button>
-  <button right (click)="toggleDrawer()"
-    class="text-sm px-3 py-1 rounded bg-[var(--ds-color-primary-600)] text-white hover:bg-[var(--ds-color-primary-700)] active:scale-95 transition-colors">Settings</button>
-</ds-nav>
+<ds-nav-tree [items]="navItems"
+  class="h-16 flex items-center gap-4 px-4 bg-[var(--ds-bg-base)] text-[var(--ds-color-text-primary)] shadow-[0_8px_18px_-8px_rgba(0,0,0,0.25)] shadow-black/10 sticky top-0 z-40">
+  <div brand class="text-base font-semibold tracking-wide px-1">
+    nG Portable UI
+  </div>
+  <div right class="flex items-center gap-2">
+    <!-- <ds-theme-toggle></ds-theme-toggle> -->
+    <button
+      class="text-sm px-3 py-1 rounded bg-[var(--ds-color-primary-600)] text-white hover:bg-[var(--ds-color-primary-500)] active:scale-95 transition-colors">Login</button>
+    <button (click)="toggleDrawer()"
+      class="text-sm px-3 py-1 rounded bg-[var(--ds-color-primary-600)] text-white hover:bg-[var(--ds-color-primary-700)] active:scale-95 transition-colors">Settings</button>
+  </div>
+</ds-nav-tree>
 @if(drawerOpen()){
 <ds-draw [opened]="drawerOpen()" (openedChange)="drawerOpen.set($event)"
   (themeChange)="onThemeChange($event)"></ds-draw>

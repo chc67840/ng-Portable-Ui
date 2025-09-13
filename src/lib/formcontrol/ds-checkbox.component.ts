@@ -1,5 +1,5 @@
-import { Component, Input, Output, EventEmitter, CUSTOM_ELEMENTS_SCHEMA, ViewChild, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { WA_TAGS } from '../wa-registry';
 
 /**
@@ -90,8 +90,8 @@ export class DsCheckboxComponent implements OnChanges {
     private syncState() {
         const el = this.el?.nativeElement as any;
         if (!el) return;
-        el.checked = this.checked;
-        el.indeterminate = this.indeterminate;
+        if (el.checked !== this.checked) el.checked = this.checked;
+        if (el.indeterminate !== this.indeterminate) el.indeterminate = this.indeterminate;
     }
     private applyCustomValidity() {
         const el = this.el?.nativeElement as any;
@@ -107,8 +107,11 @@ export class DsCheckboxComponent implements OnChanges {
     private syncFromEl() {
         const el = this.el?.nativeElement as any;
         if (el) {
-            this.checked = !!el.checked;
-            this.checkedChange.emit(this.checked);
+            const newVal = !!el.checked;
+            if (newVal !== this.checked) {
+                this.checked = newVal;
+                this.checkedChange.emit(this.checked);
+            }
         }
     }
     // Methods

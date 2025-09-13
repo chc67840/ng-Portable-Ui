@@ -17,6 +17,7 @@ export interface DsTheme {
 
 // Theme picker options align with ENHANCED_FORM_THEMES keys so selecting updates global theme
 export const DEFAULT_THEMES: DsTheme[] = [
+    { name: 'amber', primary: 'bg-amber-500', primaryText: 'text-white/85', surface: 'bg-amber-50', surfaceText: 'text-amber-900', border: 'border-amber-300', accent: 'bg-amber-100', muted: 'bg-amber-50' },
     { name: 'light', primary: 'bg-indigo-600', primaryText: 'text-white', surface: 'bg-white', surfaceText: 'text-slate-800', border: 'border-slate-200', accent: 'bg-indigo-100', muted: 'bg-slate-50' },
     { name: 'dark', primary: 'bg-indigo-500', primaryText: 'text-white', surface: 'bg-gray-900', surfaceText: 'text-gray-100', border: 'border-gray-700', accent: 'bg-gray-700', muted: 'bg-gray-800' },
     { name: 'ocean', primary: 'bg-sky-600', primaryText: 'text-white', surface: 'bg-sky-50', surfaceText: 'text-sky-900', border: 'border-sky-300', accent: 'bg-sky-100', muted: 'bg-sky-100' },

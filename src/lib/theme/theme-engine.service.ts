@@ -5,9 +5,11 @@ import { SEMANTIC_THEMES } from './tokens/semantic-tokens';
 @Injectable({ providedIn: 'root' })
 export class ThemeEngineService {
     private themes = new Map<string, ThemeDefinition>();
-    private _active = signal<string>('light');
+    private _active = signal<string>(this.loadInitialTheme());
+    private _isDark = computed(() => this._active().includes('dark'));
     activeName = this._active.asReadonly();
     active = computed(() => this.themes.get(this._active())!);
+    isDark = this._isDark;
 
     constructor() {
         // Build default themes from semantic tokens
@@ -30,7 +32,10 @@ export class ThemeEngineService {
 
     setTheme(name: string) {
         if (!this.themes.has(name)) return;
+        // Add transition class for fade effect
+        this.beginTransition();
         this._active.set(name);
+        try { localStorage.setItem('ds-theme', name); } catch { }
     }
 
     registerTheme(def: ThemeDefinition) {
@@ -40,6 +45,11 @@ export class ThemeEngineService {
     private applyTheme(theme: ThemeDefinition) {
         const root = document.documentElement;
         root.setAttribute('data-theme', theme.name);
+        // Maintain a body class for theme-scoped overrides (e.g., .theme-amber)
+        document.body.classList.forEach(c => { if (c.startsWith('theme-')) document.body.classList.remove(c); });
+        document.body.classList.add(`theme-${theme.name}`);
+        // Expose theme name as CSS var for debugging / conditional styling
+        root.style.setProperty('--ds-theme-name', theme.name);
         // Build CSS variable text
         const lines: string[] = [];
         const s = theme.semantic;
@@ -80,6 +90,29 @@ export class ThemeEngineService {
         Object.entries(s.motion.easing).forEach(([k, v]) => lines.push(`--ds-easing-${k}: ${v};`));
 
         this.injectRootVariables(lines.join('\n'));
+        this.endTransitionSoon();
+    }
+
+    private loadInitialTheme(): string {
+        try {
+            const stored = localStorage.getItem('ds-theme');
+            if (stored) return stored;
+        } catch { }
+        return 'amber';
+    }
+
+    private transitionTimer: any;
+    private beginTransition() {
+        // Apply class to body triggering CSS transitions
+        document.body.classList.add('ds-theme-transitioning');
+        // Clear any existing timer to avoid premature removal
+        if (this.transitionTimer) clearTimeout(this.transitionTimer);
+    }
+    private endTransitionSoon() {
+        if (this.transitionTimer) clearTimeout(this.transitionTimer);
+        this.transitionTimer = setTimeout(() => {
+            document.body.classList.remove('ds-theme-transitioning');
+        }, 350); // slightly longer than base duration
     }
 
     private styleEl?: HTMLStyleElement;
