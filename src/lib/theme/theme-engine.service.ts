@@ -103,9 +103,10 @@ export class ThemeEngineService {
 
     private transitionTimer: any;
     private beginTransition() {
-        // Apply class to body triggering CSS transitions
+        // Respect reduced motion preference
+        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduce) return; // skip animation entirely
         document.body.classList.add('ds-theme-transitioning');
-        // Clear any existing timer to avoid premature removal
         if (this.transitionTimer) clearTimeout(this.transitionTimer);
     }
     private endTransitionSoon() {

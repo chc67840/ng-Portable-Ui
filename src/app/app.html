@@ -4,17 +4,12 @@
     nG Portable UI
   </div>
   <div right class="flex items-center gap-2">
-    <!-- <ds-theme-toggle></ds-theme-toggle> -->
     <button
       class="text-sm px-3 py-1 rounded bg-[var(--ds-color-primary-600)] text-white hover:bg-[var(--ds-color-primary-500)] active:scale-95 transition-colors">Login</button>
-    <button (click)="toggleDrawer()"
-      class="text-sm px-3 py-1 rounded bg-[var(--ds-color-primary-600)] text-white hover:bg-[var(--ds-color-primary-700)] active:scale-95 transition-colors">Settings</button>
+    <ds-settings-menu></ds-settings-menu>
   </div>
 </ds-nav-tree>
-@if(drawerOpen()){
-<ds-draw [opened]="drawerOpen()" (openedChange)="drawerOpen.set($event)"
-  (themeChange)="onThemeChange($event)"></ds-draw>
-}
+<!-- Drawer removed; settings now handled by ds-settings-menu -->
 <main class="pt-2">
   <router-outlet />
 </main>

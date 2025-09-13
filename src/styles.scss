@@ -34,6 +34,14 @@ body.ds-theme-transitioning :where(.ds-surface, ds-nav-tree, header, main, foote
         border-color 300ms var(--ds-easing-standard, cubic-bezier(.4, 0, .2, 1));
 }
 
+@media (prefers-reduced-motion: reduce) {
+
+    body.ds-theme-transitioning,
+    body.ds-theme-transitioning :where(.ds-surface, ds-nav-tree, header, main, footer) {
+        transition: none !important;
+    }
+}
+
 /* Web Awesome reset / neutralization layer.
      Goal: Strip opinionated vendor styling so Tailwind utility classes & our tokens control look. */
 @layer base {
