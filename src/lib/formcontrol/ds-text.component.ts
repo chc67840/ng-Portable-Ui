@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output, signal, CUSTOM_ELEMENTS_SCHEMA,
 import { CommonModule } from '@angular/common';
 import { WA_TAGS } from '../wa-registry';
 import { DsThemeService } from '../ds-theme.service';
+import { computeUnderlineInputClass } from '../util/underline.util';
 
 // Thin wrapper over <wa-input>. Provides stable Angular Input/Output API.
 // IMPORTANT: We rely on CUSTOM_ELEMENTS_SCHEMA globally (standalone build supports custom elements).
@@ -137,30 +138,7 @@ export class DsTextComponent {
     }
     return base.trim();
   }
-  get computedInputClass(): string {
-    // Underline-only filled style per theme request
-    const underlineFilled = this.theme.controlInputUnderlineFilled();
-    let base = this.inputClass || underlineFilled;
-    // Force removal of side & top borders if user supplied a full border class
-    base = base
-      .replace(/\bborder(?!-b)\b[^ ]*/g, '')
-      .replace(/border-l[^ ]*/g, '')
-      .replace(/border-r[^ ]*/g, '')
-      .replace(/border-t[^ ]*/g, '');
-    // Ensure bottom border very thin (1px) and only once
-    if (!/border-b/.test(base)) base += ' border-b';
-    // Guarantee thickness is thin (override any border-b-* class after)
-    base += ' border-b-[1px]';
-    // Background filled look
-    if (!/bg-/.test(base)) base += ' bg-slate-100/70';
-    // Rounded removed for underline style
-    base = base.replace(/rounded[^ ]*/g, '');
-    // Focus state subtle color shift
-    if (!/focus:border-/.test(base)) base += ' focus:border-slate-500';
-    if (!/focus:outline-/.test(base)) base += ' focus:outline-none';
-    if (!/focus:ring/.test(base)) base += ' focus:ring-0';
-    return base.trim().replace(/\s+/g, ' ');
-  }
+  get computedInputClass(): string { return computeUnderlineInputClass({ base: this.inputClass || this.theme.controlInputUnderlineFilled() }); }
   // Constraint behavior flags
   @Input() enforceMaxlength = true;   // trim text values that exceed maxlength
 

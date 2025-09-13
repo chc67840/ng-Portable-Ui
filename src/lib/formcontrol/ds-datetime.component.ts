@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, CUSTOM_ELEMENTS_SCHEMA, ViewChild, ElementRef, signal, HostBinding, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DsThemeService } from '../ds-theme.service';
+import { computeUnderlineInputClass } from '../util/underline.util';
 
 /**
  * ds-datetime: wrapper around <wa-input type="datetime-local"> emits ISO 8601 local date-time string without timezone.
@@ -89,21 +90,7 @@ export class DsDateTimeComponent {
   }
   get computedInputClass(): string {
     // Underline-only filled styling (standardized across inputs)
-    const underline = this.theme.controlInputUnderlineFilled?.() || 'w-full bg-slate-100/70 px-2 py-2 text-sm border-b border-slate-300 focus:border-slate-500 transition-colors';
-    let cls = this.inputClass || underline;
-    cls = cls
-      .replace(/\bborder(?!-b)\b[^ ]*/g, '')
-      .replace(/border-l[^ ]*/g, '')
-      .replace(/border-r[^ ]*/g, '')
-      .replace(/border-t[^ ]*/g, '')
-      .replace(/rounded[^ ]*/g, '');
-    if (!/border-b/.test(cls)) cls += ' border-b';
-    cls += ' border-b-[1px]';
-    if (!/bg-/.test(cls)) cls += ' bg-slate-100/70';
-    if (!/focus:border-/.test(cls)) cls += ' focus:border-slate-500';
-    if (!/focus:outline-/.test(cls)) cls += ' focus:outline-none';
-    if (!/focus:ring/.test(cls)) cls += ' focus:ring-0';
-    return cls.trim().replace(/\s+/g, ' ');
+  return computeUnderlineInputClass({ base: this.inputClass || this.theme.controlInputUnderlineFilled?.() });
   }
 
   @Output() valueChange = new EventEmitter<string | null>();

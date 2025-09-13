@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, CUSTOM_ELEMENTS_SCHEMA, ViewChild, ElementRef, signal, HostBinding, SimpleChanges, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WA_TAGS } from '../wa-registry';
+import { computeUnderlineInputClass } from '../util/underline.util';
 
 /**
  * ds-textarea: wrapper around <wa-textarea> with unified DS API.
@@ -138,22 +139,9 @@ export class DsTextareaComponent implements OnChanges {
         return base.trim();
     }
     get computedTextareaClass(): string {
-        const underline = 'w-full bg-slate-100/70 px-2 py-2 text-sm border-b border-slate-300 focus:border-slate-500 transition-colors';
-        let cls = this.textareaClass || underline;
-        cls = cls
-            .replace(/\bborder(?!-b)\b[^ ]*/g, '')
-            .replace(/border-l[^ ]*/g, '')
-            .replace(/border-r[^ ]*/g, '')
-            .replace(/border-t[^ ]*/g, '')
-            .replace(/rounded[^ ]*/g, '');
-        if (!/border-b/.test(cls)) cls += ' border-b';
-        cls += ' border-b-[1px]';
-        if (!/bg-/.test(cls)) cls += ' bg-slate-100/70';
-        if (!/focus:border-/.test(cls)) cls += ' focus:border-slate-500';
-        if (!/focus:outline-/.test(cls)) cls += ' focus:outline-none';
-        if (!/focus:ring/.test(cls)) cls += ' focus:ring-0';
-        if (this.resize === 'none') cls += ' resize-none';
-        return cls.trim().replace(/\s+/g, ' ');
+        let cls = computeUnderlineInputClass({ base: this.textareaClass });
+        if (this.resize === 'none' && !/resize-none/.test(cls)) cls += ' resize-none';
+        return cls;
     }
 
     ngAfterViewInit() { this.applyCssVars(); this.setElValue(); this.applyCustomValidity(); if (this.expand) this.autoExpand(); }
