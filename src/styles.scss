@@ -1,14 +1,13 @@
-@use 'styles/tokens';
-/* Tailwind directives must follow @use rules */
+/* Replaced @use with @import so token :root declarations emit raw CSS */
+@import 'styles/tokens';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* AG Grid theme (plain CSS -> keep @import to avoid @use ordering constraint) */
+/* AG Grid theme imports */
 @import 'ag-grid-community/styles/ag-grid.css';
 @import 'ag-grid-community/styles/ag-theme-quartz.css';
 
-/* Design tokens / custom vars placeholder */
 :root {
     --ds-spacing-unit: 4px;
 }
@@ -21,17 +20,12 @@ body {
     text-rendering: optimizeLegibility;
 }
 
-/* Theme transition (applies when body has ds-theme-transitioning class) */
 body.ds-theme-transitioning {
-    transition: background-color 300ms var(--ds-easing-standard, cubic-bezier(.4, 0, .2, 1)),
-        color 300ms var(--ds-easing-standard, cubic-bezier(.4, 0, .2, 1));
+    transition: background-color 300ms var(--ds-easing-standard, cubic-bezier(.4, 0, .2, 1)), color 300ms var(--ds-easing-standard, cubic-bezier(.4, 0, .2, 1));
 }
 
-/* Smoothly transition common surfaces */
 body.ds-theme-transitioning :where(.ds-surface, ds-nav-tree, header, main, footer) {
-    transition: background-color 300ms var(--ds-easing-standard, cubic-bezier(.4, 0, .2, 1)),
-        color 300ms var(--ds-easing-standard, cubic-bezier(.4, 0, .2, 1)),
-        border-color 300ms var(--ds-easing-standard, cubic-bezier(.4, 0, .2, 1));
+    transition: background-color 300ms var(--ds-easing-standard, cubic-bezier(.4, 0, .2, 1)), color 300ms var(--ds-easing-standard, cubic-bezier(.4, 0, .2, 1)), border-color 300ms var(--ds-easing-standard, cubic-bezier(.4, 0, .2, 1));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -42,8 +36,6 @@ body.ds-theme-transitioning :where(.ds-surface, ds-nav-tree, header, main, foote
     }
 }
 
-/* Web Awesome reset / neutralization layer.
-     Goal: Strip opinionated vendor styling so Tailwind utility classes & our tokens control look. */
 @layer base {
     :where(wa-input, wa-select, wa-button, wa-textarea, wa-switch, wa-radio, wa-progress-ring, wa-drawer, wa-tab-group, wa-tab, wa-tree, wa-details) {
         font: inherit;
@@ -58,14 +50,13 @@ body.ds-theme-transitioning :where(.ds-surface, ds-nav-tree, header, main, foote
     }
 }
 
-/* Themed CSS variable usage examples (optional utility classes) */
 @layer components {
     .ds-surface {
         background: var(--ds-bg-elevated);
         color: var(--ds-color-text-primary);
         border: 1px solid var(--ds-border-subtle);
         border-radius: var(--ds-radius-md);
-        box-shadow: var(--ds-shadow-sm);
+        box-shadow: var(--ds-shadow-sm, var(--ds-shadow-md));
     }
 
     .ds-focus-ring:focus-visible {

@@ -39,9 +39,31 @@
     --ds-border-subtle: #e5e7eb;
     --ds-border-strong: #9ca3af;
     --ds-border-focus: #2563eb;
+
+    /* Primary scale fallback (amber) */
+    --ds-color-primary-50: #fffbeb;
+    --ds-color-primary-100: #fef3c7;
+    --ds-color-primary-200: #fde68a;
+    --ds-color-primary-300: #fcd34d;
+    --ds-color-primary-400: #fbbf24;
+    --ds-color-primary-500: #f59e0b;
     --ds-color-primary-600: #d97706;
-    /* amber fallback */
+    --ds-color-primary-700: #b45309;
+    --ds-color-primary-800: #92400e;
+    --ds-color-primary-900: #78350f;
+    --ds-color-primary-950: #451a03;
+
+    /* Shadows */
+    --ds-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.04);
     --ds-shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --ds-shadow-lg: 0 8px 24px -4px rgba(0, 0, 0, 0.10), 0 4px 8px -2px rgba(0, 0, 0, 0.06);
+}
+
+/* Guard: if no data-theme attribute yet, ensure base still applied */
+:root:not([data-theme]) {
+    --ds-color-text-primary: #1f2937;
+    --ds-color-text-secondary: #4b5563;
+    --ds-bg-base: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
